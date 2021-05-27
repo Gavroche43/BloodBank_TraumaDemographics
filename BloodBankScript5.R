@@ -8,8 +8,6 @@ require(dplyr)
 #*Merged 2020 patients to 
 #*Merged admit time and date columns to Admit_TD
 
-
-
 Boa6 = read_excel("F:/May/2011Apr6-2020Dec31.xlsx")
 #Remove 4696962 second admission
 Boa6 = Boa6[Boa6$MRN != 4696962 | Boa6$`HMC Arrival Mode` != "POV",]
@@ -178,3 +176,4 @@ for(i in 1:nrow(recBlood))
 #this merges the two by MRN
 temp = select(Boa6,-c(`total cryo h1`))
 temp = left_join(temp,recBlood)
+

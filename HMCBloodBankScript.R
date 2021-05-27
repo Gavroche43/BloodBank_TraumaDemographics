@@ -11,7 +11,7 @@ require(writexl)
 #Removes all patients withh ISS < 1
 #Sets minimum tt.1st.unit as 0.01hr
 #Compiles all Mechanism.bin
-excelData = read_excel("C:/Users/mikel/Desktop/BloodBank/datasetFeb12.xlsx")
+excelData = read_excel("C:/Users/mikel/Desktop/BloodBank/FEBURARY/datasetFeb12.xlsx")
 names(excelData) = make.names(str_trim(names(excelData)), unique = TRUE)
 
 dataset = subset(excelData, ISS >= 1)
@@ -154,7 +154,7 @@ create_column_table1 = function(data)
     Sex_death_P = round(chisq.test(data$Sex,data$Outcome)$p.value,digits = 6)
     return(c(Total, Age,round_(P1),Male_sex,round_(P2),Admitted_From_scene,
              Transferred,round_(P3),Blunt_injury,Penetrating,round_(P4),ISS,round_(P5),Deaths,round_(P6),
-             Age_at_death,round_(P7), Male_sex,round_(P8),Sex_death_P))
+             Age_at_death,round_(P7), Male_deaths,round_(P8),Sex_death_P))
 }
 
 output_table1$All = create_column_table1(dataset)
@@ -249,6 +249,15 @@ output_table1b$Sharps = create_column_table1sup(subset(sharp,Transf.bin == "Y"))
 output_table1b$Guns = create_column_table1sup(subset(guns,Transf.bin == "Y"))
 output_table1b$Other = create_column_table1sup(subset(other,Transf.bin == "Y"))
 
-write_xlsx(output_table1a,"C:/Users/mikel/Desktop/BloodBank/table1a.xlsx")
-write_xlsx(output_table1b,"C:/Users/mikel/Desktop/BloodBank/table1b.xlsx")
 
+output_table3.1415 = data.frame(matrix(nrow = 4, ncol = 7))
+
+colnames(output_table3.1415) = c("All","Falls","Motors","Blunt/Crush", "Sharps","Guns","Other")
+create_column_table13.1415 = function(data)
+{
+    not_data = subset(subset(dataset, !dataset$Mechanism.bin %in% data$Mechanism.bin),Transf.bin == data$Transf.bin[1])
+    temp = subset(dataset, Transf.bin == data$Transf.bin[1])
+    temp$Mech.bin = ifelse(temp$Mechanism.bin == data$Mechanism.bin[1], data$Mechanism.bin[1], "Other")
+    isdata = nrow(not_data) == 0
+    Pt_3unit_1hr = sum(data$)
+}

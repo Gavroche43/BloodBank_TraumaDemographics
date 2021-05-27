@@ -143,6 +143,36 @@ for(i in 1:nrow(recBlood))
   recBlood[i,]$`total cryo 1st24h` = Cryo24hr
 }
 
+#Adding Plasma Transfuses
+findPlasma = function(pt_MRN, pt_AdmitTime)
+{
+  Plasma = subset(transfusions,`Component Type Description` == "PLASMA")
+  pts = subset(Plasma, MRN == pt_MRN)
+  return(list(as.numeric(difftime(as.POSIXct(pts$"Issue_TD", tz = "UTC"),as.POSIXct(pt_AdmitTime, tz = "UTC"), units = "hours"))))
+}
+
+recBlood = subset(Boa6, `blood this hosp y/n` %in% c("Yes","yes"))
+
+recBlood$Plasmas = c("")
+class(recBlood$Plasmas) = "list"
+for(i in 1:nrow(recBlood))
+{
+  recBlood[i,]$Plasmas = findPlasma(recBlood[i,]$MRN ,recBlood[i,]$admit_TD)
+}
+
+#Total Plasma 
+class(recBlood$`total plasma h1`) = "integer"
+class(recBlood$`total plasma 1st4h`) = "integer"
+class(recBlood$`total plasma 1st24h`) = "integer"
+for(i in 1:nrow(recBlood))
+{
+  Plasma1hr = sum(recBlood[i,]$Plasmas[[1]] > 0 & recBlood[i,]$Plasmas[[1]] < 1)
+  recBlood[i,]$`total plasma h1` = Plasma1hr
+  Plasma4hr = sum(recBlood[i,]$Plasmas[[1]] > 0 & recBlood[i,]$Plasmas[[1]] < 4)
+  recBlood[i,]$`total plasma 1st4h` = Plasma4hr
+  Plasma24hr = sum(recBlood[i,]$Plasmas[[1]] > 0 & recBlood[i,]$Plasmas[[1]] <  24)
+  recBlood[i,]$`total plasma 1st24h` = Plasma24hr
+}
 #Merging the recBlood back with Boa6
 #recBlood was the subset of patients that recieved blood
 #this merges the two by MRN
